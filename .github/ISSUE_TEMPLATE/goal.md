@@ -13,6 +13,8 @@ assignees: ''
 
 ## ❤ Why?
 
+<why this is important>
+
 ## 🧑‍🏫 Sponsors, Mentors, Collaborators
 
 <who can support you>
