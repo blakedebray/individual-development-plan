@@ -1,0 +1,39 @@
+name: Weekly Reflection Reminder
+on:
+  schedule:
+    - cron: '0 0 * * 1' # This will run every Monday at 00:00
+
+jobs:
+  create_issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Create issue from template
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const fs = require('fs');
+            const issueTemplate = fs.readFileSync('.github/ISSUE_TEMPLATE/reflection.md', 'utf8');
+
+            // Calculate the date of the next Monday and the following Friday
+            const now = new Date();
+            const nextMonday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (1 - now.getDay() + 7) % 7);
+            const nextFriday = new Date(nextMonday.getFullYear(), nextMonday.getMonth(), nextMonday.getDate() + 4);
+
+            // Format these dates as strings
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const nextMondayStr = nextMonday.toLocaleString('en-US', options);
+            const nextFridayStr = nextFriday.toLocaleString('en-US', options);
+
+            // Use these strings to create the title of the issue
+            const title = `Reflection: ${nextMondayStr} - ${nextFridayStr}`;
+
+            github.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: issueTemplate
+            })
