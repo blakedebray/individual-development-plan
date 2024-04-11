@@ -10,7 +10,6 @@ assignees: ''
 
 ### :question: How was this week?
 
-<use an emoji, quote, short description>
 
 ### :date: Events that happened this week
 
@@ -21,7 +20,5 @@ assignees: ''
 - 
 
 ### :heart: My impact
-
-<list any impact that you had on your work, personal, professional goals, etc>
 
 -

@@ -15,12 +15,8 @@ assignees: ''
 
 ## 🏫 What I hope to learn
 
-<consider using KSA (the Knowledge, Skill, or Ability being developed) or any career ladder competencies>
-
 ## 📏 Success Metrics
 
-<what are the expected results from taking this action>
+<what you are hoping that will come from this action>
 
-## 📚 Resources
-
-<tools, support, or information you will need>
+## 📚 Resources that I need
