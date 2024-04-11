@@ -2,7 +2,7 @@
 name: Action
 about: Action to work towards achieving your goal
 title: ''
-labels: ''
+labels: action
 assignees: ''
 
 ---

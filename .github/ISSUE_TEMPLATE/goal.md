@@ -2,7 +2,7 @@
 name: Goal
 about: Describe a long/short-term goal
 title: "[Goal]"
-labels: ''
+labels: goal
 assignees: ''
 
 ---

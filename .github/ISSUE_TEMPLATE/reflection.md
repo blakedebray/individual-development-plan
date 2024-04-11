@@ -2,7 +2,7 @@
 name: Reflection
 about: To describe what happened, what I learned, and what impact I had on others
   for the past week
-title: ''
+title: "[Reflection] Week of <start date> - <end date>"
 labels: reflection
 assignees: ''
 
