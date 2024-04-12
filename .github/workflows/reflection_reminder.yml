@@ -1,39 +1,60 @@
-name: Weekly Reflection Reminder
+name: Create Weekly Reflection
 on:
   schedule:
     - cron: '0 0 * * 1' # This will run every Monday at 00:00
-
+  workflow_dispatch:
+      inputs:
+        startdate:
+          description: 'Start date (YYYY-MM-DD)'
+          required: false
+        enddate:
+          description: 'End date (YYYY-MM-DD)'
+          required: false
 jobs:
   create_issue:
+    name: Create Reflection issue
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+      - name: Create an issue via an action
+        run: |
+          BODY=$(cat .github/content-templates/reflection.md)
 
-      - name: Create issue from template
-        uses: actions/github-script@v5
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const fs = require('fs');
-            const issueTemplate = fs.readFileSync('.github/ISSUE_TEMPLATE/reflection.md', 'utf8');
+          if [ -z "$STARTDATE" ]; then
+            # Get the Monday of this week
+            STARTDATE=$(date -d "last monday" "+%B %d")
+          fi
+          if [ -z "$ENDDATE" ]; then
+            # Get the Friday of this week
+            ENDDATE=$(date -d "friday this week" "+%B %d, %Y")
+          fi
 
-            // Calculate the date of the next Monday and the following Friday
-            const now = new Date();
-            const nextMonday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (1 - now.getDay() + 7) % 7);
-            const nextFriday = new Date(nextMonday.getFullYear(), nextMonday.getMonth(), nextMonday.getDate() + 4);
-
-            // Format these dates as strings
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const nextMondayStr = nextMonday.toLocaleString('en-US', options);
-            const nextFridayStr = nextFriday.toLocaleString('en-US', options);
-
-            // Use these strings to create the title of the issue
-            const title = `Reflection: ${nextMondayStr} - ${nextFridayStr}`;
-
-            github.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: title,
-              body: issueTemplate
-            })
+          if [[ $CLOSE_PREVIOUS == true ]]; then
+            previous_issue_number=$(gh issue list \
+              --label "$LABELS" \
+              --json number \
+              --jq '.[0].number')
+            if [[ -n $previous_issue_number ]]; then
+              gh issue close "$previous_issue_number"
+              gh issue unpin "$previous_issue_number"
+            fi
+          fi
+          new_issue_url=$(gh issue create \
+            --title "Reflection: $STARTDATE - $ENDDATE" \
+            --assignee "$ASSIGNEES" \
+            --body "$BODY")
+          if [[ $PINNED == true ]]; then
+            gh issue pin "$new_issue_url"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          ASSIGNEES: ${{ github.repository_owner }}
+          LABELS: reflection
+          STARTDATE: ${{ github.event.inputs.startdate }}
+          ENDDATE: ${{ github.event.inputs.enddate }}
+          PINNED: false
+          CLOSE_PREVIOUS: false
