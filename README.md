@@ -22,8 +22,8 @@ A reflection is intended to review progress towards goals in an IDP. It is an op
 When enabled and configured, [this action](./.github/workflows/reflection_reminder.yml) will run on a weekly (Monday) schedule to automatically create a "reflection" issue that can be updated throughout the week.
 
 To use this action:
-- Create a personal access token (`ACTIONS_REFLECTION_PAT`) with the ability to write issues.
-- Enable the workflow
+- Create a secret (`ACTIONS_REFLECTION_PAT`), using a personal access token with the permission to write issues.
+- Ensure the workflow is enabled.
 
 This will run on a schedule or can be run manually. The title will default to the current work week's date range and populate the issue body based on [this template](./.github/content-templates/reflection.md).
 
